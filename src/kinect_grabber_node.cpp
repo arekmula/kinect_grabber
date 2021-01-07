@@ -10,6 +10,11 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 
+// File reading specific includes
+#include <sys/stat.h>
+#include <string>
+#include <fstream>
+
 using namespace std;
 using namespace cv;
 cv::Mat imageRGB;
@@ -17,6 +22,41 @@ cv::Mat imageDepth;
 sensor_msgs::PointCloud2 cloud;
 
 size_t frameNo = 0;
+
+
+bool checkIfFileExists(const std::string& name)
+{
+    struct stat buffer;
+    return (stat (name.c_str(), &buffer)==0);
+}
+
+
+void readFrameNo(const std::string& name)
+{
+    string line;
+    ifstream myFile(name);
+
+    if (myFile.is_open())
+    {
+        while(getline(myFile, line))
+        {
+            frameNo = std::stoi(line);
+        }
+        myFile.close();
+    }
+}
+
+
+void saveFrameNo(const std::string& name)
+{
+    ofstream myFile(name);
+    if (myFile.is_open())
+    {
+        myFile << frameNo;
+        myFile.close();
+    }
+}
+
 
 void imageRGBCallback(const sensor_msgs::ImageConstPtr& msg)
 {
@@ -45,6 +85,8 @@ void imageRGBCallback(const sensor_msgs::ImageConstPtr& msg)
 
         std::cout << "frame no " << frameNo << "\n";
         frameNo++;
+
+        std::cout << checkIfFileExists("frameNo.txt") << std::endl;
     }
 }
 
@@ -69,6 +111,10 @@ int main(int argc, char **argv)
     //initialize node
     ros::init(argc, argv, "cv_example");
 
+    bool frameNoExists = checkIfFileExists("frameNo.txt");
+    if (frameNoExists)
+        readFrameNo("frameNo.txt");
+
     // node handler
     ros::NodeHandle n;
 
@@ -82,6 +128,8 @@ int main(int argc, char **argv)
     ros::Subscriber subCloud = n.subscribe ("/camera/depth_registered/points", 100, pointCloudCallback);
 
     ros::spin();
+
+    saveFrameNo("frameNo.txt");
 
     return 0;
 }
