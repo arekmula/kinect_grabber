@@ -73,13 +73,13 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
 
     // subsribe topic (RGB image)
-    ros::Subscriber subRGB = n.subscribe("/kinect/color/image_raw", 1000, imageRGBCallback);
+    ros::Subscriber subRGB = n.subscribe("/camera/rgb/image_raw", 1000, imageRGBCallback);
 
     // subsribe topic (Detph image)
-    ros::Subscriber subDepth = n.subscribe("/kinect/color/image_raw", 1000, imageDepthCallback);
+    ros::Subscriber subDepth = n.subscribe("/camera/depth/image_raw", 1000, imageDepthCallback);
 
     // subsribe topic (PointCloud)
-    ros::Subscriber subCloud = n.subscribe ("/kinect/depth_registered/points", 100, pointCloudCallback);
+    ros::Subscriber subCloud = n.subscribe ("/camera/depth_registered/points", 100, pointCloudCallback);
 
     ros::spin();
 
