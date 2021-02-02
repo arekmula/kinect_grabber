@@ -1,0 +1,1 @@
+rosbag record hz_image_raw hz_depth_image_raw hz_points
