@@ -32,6 +32,6 @@ ROS opencv example
 - run:  
     ```
     cd ~/catkin_ws
-    roslaunch freenect_launch freenect.launch
+    roslaunch openni_launch openni.launch depth_registration:=True
     rosrun kinect_grabber kinect_grabber_node
     ```
